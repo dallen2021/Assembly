@@ -1,0 +1,239 @@
+.data                           
+prompt_x:
+.string "Enter Value for x: "     # Prompt for x
+prompt_y:
+.string "\nEnter Value for y: "     # Prompt for y
+newLine:    
+.string "\n"                        # Newline character
+add_sign:
+.string " + "                       # + Output 
+sub_sign:
+.string " - "                       # - Output 
+mult_sign:
+.string " * "                       # * Output 
+equal_sign:
+.string " = "                       # = Output 
+
+.bss                       
+	.lcomm x, 32
+	 movl $0, x
+	.lcomm y, 32
+	 movl $0, y
+	.lcomm result, 32
+	 movl $0, result
+	 
+.text                   
+.global main
+main:            
+
+# Prompt user for x
+	movq $4, %rax       # sys_write    
+	movq $1, %rbx       # $1 is stdout    
+	movq $prompt_x, %rcx    # message to write    
+	movq $19, %rdx      # length of the message    
+	int  $0x80             
+	
+# Read x
+	movq $3, %rax           
+	movq $0, %rbx           
+	movq $x, %rcx          
+	movq $0x2, %rdx       
+	int $0x80           
+
+# Prompt user for y
+	movq $4, %rax       # sys_write    
+	movq $1, %rbx       # $1 is stdout    
+	movq $prompt_y, %rcx    # message to write    
+	movq $20, %rdx      # length of the message    
+	int  $0x80            
+# Read y
+	movq $3, %rax      
+	movq $0, %rbx  
+	movq $y, %rcx  
+	movq $0x2, %rdx    
+	int $0x80           
+
+
+# ADDITION x + y = 
+# Output newLine
+    movq $4, %rax           
+    movq $1, %rbx               
+    movq $newLine, %rcx          
+    movq $1, %rdx            
+    int  $0x80               
+    
+# Output x
+    movq $4, %rax  
+    movq $1, %rbx
+    movq $x, %rcx
+    movq $0x1, %rdx
+    int  $0x80     
+    
+# Output addition sign '+'
+    movq $4, %rax       
+    movq $1, %rbx               
+    movq $add_sign, %rcx    
+    movq $3, %rdx           
+    int  $0x80       
+    
+# Output y 
+    movq $4, %rax          
+    movq $1, %rbx             
+    movq $y, %rcx          
+    movq $0x1, %rdx          
+    int  $0x80           
+    
+# Output equal sign '='
+    movq $4, %rax           
+    movq $1, %rbx           
+    movq $equal_sign, %rcx  
+    movq $3, %rdx           
+    int  $0x80
+    
+# Moving x and y to registers
+    movq x, %rdx            # move x to rdx register
+    subq $0x30, %rdx        # subtract ASCII value for '0' to convert to number
+    
+    movq y, %rax            # move y to rax register
+    subq $0x30, %rax        # subtract ASCII value for '0' to convert to number
+
+# Calculate result
+    addq %rax, %rdx         # add y and store result in rdx register
+    addq $0x30, %rdx        # add ASCII value for '0' to convert back to ASCII
+    movq %rdx, result       # store ASCII value into result
+
+# Output result
+    movq $4, %rax           
+    movq $1, %rbx               
+    movq $result, %rcx      
+    movq $0x1, %rdx         
+    int  $0x80              
+
+# Reset
+    movl $0, result         # Reset result to 0
+    movq $0, %rdx           # move value 0 to rdx register
+    movq $0, %rax           # move value 0 to rax register
+
+
+# SUBTRACTION x - y = 
+# Output newLine
+    movq $4, %rax           
+    movq $1, %rbx           
+    movq $newLine, %rcx     
+    movq $1, %rdx           
+    int  $0x80              
+    
+# Output x
+    movq $4, %rax           
+    movq $1, %rbx           
+    movq $x, %rcx           
+    movq $0x1, %rdx         
+    int  $0x80              
+    
+# Output subtraction sign '-' 
+    movq $4, %rax           
+    movq $1, %rbx           
+    movq $sub_sign, %rcx    
+    movq $3, %rdx           
+    int  $0x80              
+    
+# Output y
+    movq $4, %rax         
+    movq $1, %rbx           
+    movq $y, %rcx          
+    movq $0x1, %rdx         
+    int  $0x80              
+    
+# Output equal sign '='
+    movq $4, %rax            
+    movq $1, %rbx            
+    movq $equal_sign, %rcx     
+    movq $3, %rdx             
+    int  $0x80              
+    
+# Moving x and y to registers
+    movq x, %rdx            # move x to rdx register
+    subq $0x30, %rdx        # subtract ASCII value for '0' to convert to number
+    
+    movq y, %rax            # move y to rax register
+    subq $0x30, %rax        # subtract ASCII value for '0' to convert to number
+
+# Calculate result
+    subq %rax, %rdx         # subtract y and store result in rdx register
+    addq $0x30, %rdx        # add ASCII value for '0' to convert back to ASCII
+    movq %rdx, result       # store ASCII value into z
+
+# Output result
+    movq $4, %rax           
+    movq $1, %rbx           
+    movq $result, %rcx       
+    movq $0x1, %rdx           
+    int  $0x80              
+
+# Reset
+    movl $0, result         # Reset result to 0
+    movq $0, %rdx           # move value 0 to rdx register
+    movq $0, %rax           # move value 0 to rax register
+
+
+# MULTIPLICATION x * y = 
+# Output newLine
+    movq $4, %rax               
+    movq $1, %rbx               
+    movq $newLine, %rcx     
+    movq $1, %rdx               
+    int  $0x80              
+    
+# Output x
+    movq $4, %rax               
+    movq $1, %rbx               
+    movq $x, %rcx           
+    movq $0x1, %rdx             
+    int  $0x80              
+    
+# Output multiplication sign '*'
+    movq $4, %rax              
+    movq $1, %rbx          
+    movq $mult_sign, %rcx     
+    movq $3, %rdx       
+    int  $0x80          
+    
+# Output y
+    movq $4, %rax           
+    movq $1, %rbx               
+    movq $y, %rcx           
+    movq $0x1, %rdx             
+    int  $0x80              
+    
+# Output equal sign '='
+    movq $4, %rax               
+    movq $1, %rbx               
+    movq $equal_sign, %rcx      
+    movq $3, %rdx               
+    int  $0x80              
+
+# Moving x and y to registers
+    movq x, %rdx            # move x to rdx register
+    subq $0x30, %rdx        # subtract ASCII value for '0' to convert to number
+    
+    movq y, %rax            # move y to rax register
+    subq $0x30, %rax        # subtract ASCII value for '0' to convert to number
+
+# Calculate result
+    imulq %rax, %rdx        # multiply by x and store result in rdx register
+    addq $0x30, %rdx        # add ASCII value for '0' to convert back to ASCII
+    movq %rdx, result            # store ASCII value into z
+
+# Output result
+    movq $4, %rax           # sys_write    
+    movq $1, %rbx           # $1 is stdout    
+    movq $result, %rcx           # output z
+    movq $0x1, %rdx         # length of the message    
+    int  $0x80              # system interrupt to kernel
+
+# Exit with return 0
+	movl $1, %eax       # exit(0) - $1 is sys_exit    
+	movl $0, %ebx       # 0 is return value    
+	int  $0x80          # system interrupt to kernel    
+	ret
+	
